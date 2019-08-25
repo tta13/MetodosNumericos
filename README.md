@@ -1,2 +1,2 @@
 # MetodosNumericos
-Implementando metodos numericos em python
+Implementando alguns métodos numéricos em python.
