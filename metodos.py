@@ -75,12 +75,12 @@ def metodo_adams_bashforth(y0, t0, h, n, f_string, ordem, y_list, saida):
 	if(ordem == 1):
 		y0 = y_list[0]
 		t0 = t0
-		for j in range(0, n+1):
-			print(j, y0, file = saida)
+		for j in range(1, n+1):
 			fy = f.subs(y, y0)
 			k1 = fy.subs(t, t0)
 			y0 += h*k1
 			t0 += h
+			print(j, y0, file = saida)
 	elif(ordem == 2):
 		y0 = y_list[1]
 		t0 += h
@@ -435,6 +435,93 @@ def metodo_adams_moulton(y0, t0, h, n, f_string, ordem, y_list, saida):
 			k1 = fy.subs(t, (t0))
 			k8 = f.subs(t, t0+h)
 			print(j, y0, file = saida)
+def metodo_funcao_inversa(y0, t0, h, n, f_string, ordem, y_list, saida):
+	y, t = sympy.symbols("y t")
+	f = sympy.sympify(f_string)
+	t0 += (ordem-1)*h
+	if(ordem == 1):
+		for j in range(1, n+1):
+			t0 += h
+			func = f.subs(t, t0)
+			k1 = sympy.solveset(y0 + func*h - y, y)
+			y0 = k1.args[0]
+			print(j, y0, file = saida)
+	elif(ordem == 2):
+		y0 = y_list[1]
+		y1 = y_list[0]
+		for i in range(2, n+1):
+			t0 += h
+			k1 = f.subs(t, t0)
+			solution = (1/3)*(4*y0 - y1 + 2*h*k1) - y 
+			solution = sympy.solveset(solution, y)
+			y1 = y0
+			y0 = solution.args[0]
+			print(j, y0, file = saida)
+	elif(ordem == 3):
+		y0 = y_list[2]
+		y1 = y_list[1]
+		y2 = y_list[0]
+		for j in range(3, n+1):
+			t0 += h
+			k1 = f.subs(t, t0)
+			solution = (1/11)*(18*y0 - 9*y1 + 2*y2 + 6*h*k1) - y
+			solution = sympy.solveset(solution, y)
+			y2 = y1
+			y1 = y0
+			y0 = solution.args[0]
+			print(j, y0, file = saida)
+	elif(ordem == 4):
+		y0 = y_list[3]
+		y1 = y_list[2]
+		y2 = y_list[1]
+		y3 = y_list[0]
+		for j in range(4, n+1):
+			t0 += h
+			k1 = f.subs(t, t0)
+			solution = (1/25)*(48*y0 - 36*y1 + 16*y2 - 3*y3 + 12*h*k1) - y
+			solution = sympy.solveset(solution, y)
+			y3 = y2
+			y2 = y1
+			y1 = y0
+			y0 = solution.args[0]
+			print(j, y0, file = saida)
+	elif(ordem == 5):
+		y0 = y_list[4]
+		y1 = y_list[3]
+		y2 = y_list[2]
+		y3 = y_list[1]
+		y4 = y_list[0]
+		for j in range(5, n+1):
+			t0 += h
+			k1 = f.subs(t, t0)
+			solution = (1/137)*(300*y0 - 300*y1 + 200*y2 - 75*y3 + 12*y4 + 60*h*k1) - y
+			solution = sympy.solveset(solution, y)
+			y4 = y3
+			y3 = y2
+			y2 = y1
+			y1 = y0
+			y0 = solution.args[0]
+			print(j, y0, file = saida)
+	elif(ordem == 6):
+		y0 = y_list[5]
+		y1 = y_list[4]
+		y2 = y_list[3]
+		y3 = y_list[2]
+		y4 = y_list[1]
+		y5 = y_list[0]
+		for j in range(6, n+1):
+			t0 += h
+			k1 = f.subs(t, t0)
+			solution = (1/147)*(360*y0 - 450*y1 + 400*y2 - 225*y3 + 72*y4 - 10*y5 + 60*h*k1) - y
+			solution = sympy.solveset(solution, y)
+			y5 = y4
+			y4 = y3
+			y3 = y2
+			y2 = y1
+			y1 = y0
+			y0 = solution.args[0]
+			print(j, y0, file = saida)
+
 
 entrada = open("entrada.txt")
 saida = open("saida.txt", "w")
@@ -468,7 +555,7 @@ for i in lines:
 		y_list = []
 		for j in range(1, int(string_parts[-1])+1):
 			y_list.append(float(string_parts[j]))
-			print(j, string_parts[j], file = saida)
+			print(j-1, string_parts[j], file = saida)
 		metodo_adams_bashforth(float(string_parts[1]), float(string_parts[-5]), float(string_parts[-4]),
 			int(string_parts[-3]), string_parts[-2], int(string_parts[-1]), y_list, saida)
 		saida.write("\n")
@@ -511,7 +598,7 @@ for i in lines:
 		y_list = []
 		for j in range(1, int(string_parts[-1])):
 			y_list.append(float(string_parts[j]))
-			print(j, string_parts[j], file = saida)
+			print(j-1, string_parts[j], file = saida)
 		metodo_adams_moulton(float(string_parts[1]), float(string_parts[-5]), float(string_parts[-4]),
 			int(string_parts[-3]), string_parts[-2], int(string_parts[-1]), y_list, saida)
 		saida.write("\n")
@@ -547,7 +634,51 @@ for i in lines:
 		metodo_adams_moulton(float(string_parts[1]), float(string_parts[-5]), float(string_parts[-4]),
 			int(string_parts[-3]), string_parts[-2], int(string_parts[-1]), y_list, saida)
 		saida.write("\n")
+	elif(string_parts[0] == "formula_inversa"):
+		print("Metodo Formula Inversa de Diferenciacao", file = saida)
+		print("y( ", float(string_parts[-5]), " ) = ", string_parts[1], file = saida)
+		print("h = ", string_parts[-4], file = saida)
+		y_list = []
+		for j in range(1, int(string_parts[-1])+1):
+			y_list.append(float(string_parts[j]))
+			print(j-1, string_parts[j], file = saida)
+		metodo_funcao_inversa(float(string_parts[1]), float(string_parts[-5]), float(string_parts[-4]),
+			int(string_parts[-3]), string_parts[-2], int(string_parts[-1]), y_list, saida)
+		saida.write("\n")
+	elif(string_parts[0] == "formula_inversa_by_euler"):
+		print("Metodo Formula Inversa de Diferenciacao por Euler", file = saida)
+		y_list = []
+		y_list = metodo_euler(float(string_parts[1]), float(string_parts[2]), float(string_parts[3]), 
+			int(string_parts[-1]) - 1, string_parts[-2], saida)
+		metodo_funcao_inversa(float(string_parts[1]), float(string_parts[-5]), float(string_parts[-4]),
+			int(string_parts[-3]), string_parts[-2], int(string_parts[-1]), y_list, saida)
+		saida.write("\n")
+	elif(string_parts[0] == "formula_inversa_by_euler_inverso"):
+		print("Metodo Formula Inversa de Diferenciacao por Euler Inverso", file = saida)
+		y_list = []
+		y_list = metodo_euler_inverso(float(string_parts[1]), float(string_parts[2]), float(string_parts[3]), 
+			int(string_parts[-1]) - 1, string_parts[-2], saida)
+		metodo_funcao_inversa(float(string_parts[1]), float(string_parts[-5]), float(string_parts[-4]),
+			int(string_parts[-3]), string_parts[-2], int(string_parts[-1]), y_list, saida)
+		saida.write("\n")
+	elif(string_parts[0] == "formula_inversa_by_euler_aprimorado"):
+		print("Metodo Formula Inversa de Diferenciacao por Euler Aprimorado", file = saida)
+		y_list = []
+		y_list = metodo_euler_aprimorado(float(string_parts[1]), float(string_parts[2]), float(string_parts[3]), 
+			int(string_parts[-1]) - 1, string_parts[-2], saida)
+		metodo_funcao_inversa(float(string_parts[1]), float(string_parts[-5]), float(string_parts[-4]),
+			int(string_parts[-3]), string_parts[-2], int(string_parts[-1]), y_list, saida)
+		saida.write("\n")
+	elif(string_parts[0] == "formula_inversa_by_runge_kutta"):
+		print("Metodo Formula Inversa de Diferenciacao por Runge-Kutta (ordem = ", string_parts[-1], ")", file = saida)
+		y_list = []
+		y_list = metodo_runge_kutta(float(string_parts[1]), float(string_parts[2]), float(string_parts[3]), 
+			int(string_parts[-1]) - 1, string_parts[-2], saida)
+		metodo_funcao_inversa(float(string_parts[1]), float(string_parts[-5]), float(string_parts[-4]),
+			int(string_parts[-3]), string_parts[-2], int(string_parts[-1]), y_list, saida)
+		saida.write("\n")
 	else: 
 		saida.write("Metodo nao reconhecido\n\n")
+print("Metodos Calculados no arquivo saida.txt")
 entrada.close()
 saida.close()
