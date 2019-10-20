@@ -33,7 +33,6 @@ def euler_inverso(y0, t0, h, n, f_string, saida, implicito):
 			fy = f.subs(t, t0)
 			k1 = sympy.solveset(y0 + fy*h - y, y)
 			y0 = k1.args[0]
-		return lista_y
 	else:
 		for j in range(0, n+1):
 			lista_y.append(y0)
@@ -43,7 +42,7 @@ def euler_inverso(y0, t0, h, n, f_string, saida, implicito):
 			yeuler = euler(y0, t0-h, h, 1, f_string, saida, 0)
 			k1 = fy.subs(y, yeuler[1])
 			y0 += k1*h
-		return lista_y
+	return lista_y
 
 
 def euler_aprimorado(y0, t0, h, n, f_string, saida):
