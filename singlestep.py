@@ -25,7 +25,7 @@ def euler_inverso(y0, t0, h, n, f_string, saida, implicito):
 	print("h = ", h, file = saida)
 	lista_y = []
 	f = sympy.sympify(f_string)
-	if(implicito!=0):
+	if(implicito != '0'):
 		for j in range(0, n+1):
 			lista_y.append(y0)
 			print(j, y0, file = saida)
