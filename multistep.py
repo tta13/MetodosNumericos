@@ -1,7 +1,6 @@
 #Metodos multi-step para o projeto
 
 import sympy
-import singlestep
 
 def runge_kutta(y0, t0, h, n, f_string, saida):
 	y, t = sympy.symbols("y t")
@@ -217,6 +216,9 @@ def adams_bashforth(y0, t0, h, n, f_string, ordem, y_list, saida, printo):
 			k1 = fy.subs(t, t0)
 			if(printo != 0):
 				print(j, y0, file = saida) 
+	else:
+		if(printo != 0):
+				print("Ordem nao reconhecida", file = saida) 
 	return lista_y		
 
 def adams_moulton(y0, t0, h, n, f_string, ordem, y_list, saida, implicito):
@@ -224,14 +226,12 @@ def adams_moulton(y0, t0, h, n, f_string, ordem, y_list, saida, implicito):
 	f = sympy.sympify(f_string)	
 	lista_y = []
 	lista_y = y_list.copy()
-	if(ordem == 1):
-		lista_y = singlestep.euler_inverso(y0, t0, h, n, f_string, saida, implicito)
-	elif(ordem == 2):
+	if(ordem == 2):
 		y0 = y_list[0]
 		t0 += h
 		fy = f.subs(y, y_list[0])
 		k1 = fy.subs(t, t0)
-		if(implicito != 0):
+		if(implicito != '0'):
 			k2 = f.subs(t, t0+h)
 			for j in range(1, n+1):
 				solution = y0 + (h/2)*(k1 + k2) - y
@@ -262,7 +262,7 @@ def adams_moulton(y0, t0, h, n, f_string, ordem, y_list, saida, implicito):
 		fy2 = f.subs(y, y_list[0])
 		k2 = fy2.subs(t, t0 - h)
 		#implicito
-		if(implicito != 0):
+		if(implicito != '0'):
 			k3 = f.subs(t, t0+h)
 			for j in range(2, n+1):
 				solution = y0 + (h/12)*(5*k3 + 8*k1 -k2) - y
@@ -299,7 +299,7 @@ def adams_moulton(y0, t0, h, n, f_string, ordem, y_list, saida, implicito):
 		fy3 = f.subs(y, y_list[0])
 		k3 = fy3.subs(t, t0 - 2*h)
 		#implicito
-		if(implicito != 0):
+		if(implicito != '0'):
 			k4 = f.subs(t, t0+h)
 			for j in range(3, n+1):
 				solution = y0 + (h/24)*(9*k4 + 19*k1 - 5*k2 + k3) - y
@@ -341,7 +341,7 @@ def adams_moulton(y0, t0, h, n, f_string, ordem, y_list, saida, implicito):
 		fy4 = f.subs(y, y_list[0])
 		k4 = fy4.subs(t, (t0 - 3*h))
 		#implicito
-		if(implicito != 0):
+		if(implicito != '0'):
 			k5 = f.subs(t, t0+h)
 			for j in range(4, n+1):
 				solution = y0 + (h/720)*(251*k5 + 646*k1 - 264*k2 + 106*k3 - 19*k4) - y
@@ -388,7 +388,7 @@ def adams_moulton(y0, t0, h, n, f_string, ordem, y_list, saida, implicito):
 		fy5 = f.subs(y, y_list[0])
 		k5 = fy5.subs(t, t0 - 4*h)
 		#implicito
-		if(implicito != 0):
+		if(implicito != '0'):
 			k6 = f.subs(t, t0+h)
 			for j in range(5, n+1):
 				solution = y0 + (h/1440)*(475*k6 + 1427*k1 - 798*k2 + 482*k3 - 173*k4
@@ -442,7 +442,7 @@ def adams_moulton(y0, t0, h, n, f_string, ordem, y_list, saida, implicito):
 		fy6 = f.subs(y, y_list[0])
 		k6 = fy6.subs(t, t0 - 5*h)
 		#implicito
-		if(implicito != 0):
+		if(implicito != '0'):
 			k7 = f.subs(t, t0+h)
 			for j in range(6, n+1):
 				solution = y0 + (h/60480)*(19087*k7 + 65112*k1 - 46461*k2 + 35704*k3 - 20211*k4
@@ -501,7 +501,7 @@ def adams_moulton(y0, t0, h, n, f_string, ordem, y_list, saida, implicito):
 		fy7 = f.subs(y, y_list[0])
 		k7 = fy7.subs(t, t0-6*h) 
 		#implicito
-		if(implicito != 0):
+		if(implicito != '0'):
 			k8 = f.subs(t, t0+h)
 			for j in range(7, n+1):
 				solution = y0 + (h/120960)*(36799*k8 + 139849*k1 - 121797*k2 + 123133*k3 - 88547*k4
@@ -545,6 +545,8 @@ def adams_moulton(y0, t0, h, n, f_string, ordem, y_list, saida, implicito):
 				y_list[5] = y_list[6]
 				y_list[6] = y0
 				print(j, y0, file = saida)
+	else:
+		print("Ordem nao reconhecida", file = saida)
 	return lista_y
 
 def funcao_inversa(y0, t0, h, n, f_string, ordem, y_list, saida, implicito):
@@ -553,74 +555,134 @@ def funcao_inversa(y0, t0, h, n, f_string, ordem, y_list, saida, implicito):
 	t0 += (ordem-1)*h
 	lista_y = []
 	lista_y = y_list.copy()
-	if(ordem == 1):
-		for j in range(1, n+1):
-			t0 += h
-			func = f.subs(t, t0)
-			k1 = sympy.solveset(y0 + func*h - y, y)
-			y0 = k1.args[0]
-			lista_y.append(y0)
-			print(j, y0, file = saida)
-	elif(ordem == 2):
+	if(ordem == 2):
 		y0 = y_list[1]
 		y1 = y_list[0]
-		for i in range(2, n+1):
-			t0 += h
-			k1 = f.subs(t, t0)
-			solution = (1/3)*(4*y0 - y1 + 2*h*k1) - y 
-			solution = sympy.solveset(solution, y)
-			y1 = y0
-			y0 = solution.args[0]
-			lista_y.append(y0)
-			print(j, y0, file = saida)
+		if(implicito != '0'):
+			for i in range(2, n+1):
+				t0 += h
+				k1 = f.subs(t, t0)
+				solution = (1/3)*(4*y0 - y1 + 2*h*k1) - y 
+				solution = sympy.solveset(solution, y)
+				y1 = y0
+				y0 = solution.args[0]
+				lista_y.append(y0)
+				print(i, y0, file = saida)
+		else:
+			for i in range(2, n+1):
+				y_bashforth = adams_bashforth(y0, t0-(ordem - 1)*h, h, ordem, f_string, ordem, y_list, saida, 0)				
+				t0 += h
+				fy = f.subs(t, t0)
+				k1 = fy.subs(y, y_bashforth[-1])				
+				y_final = (1/3)*(4*y0 - y1 + 2*h*k1)
+				lista_y.append(y_final)
+				y1 = y0
+				y0 = y_final
+				y_list[0] = y1
+				y_list[1] = y0
+				print(i, y0, file = saida)
 	elif(ordem == 3):
 		y0 = y_list[2]
 		y1 = y_list[1]
 		y2 = y_list[0]
-		for j in range(3, n+1):
-			t0 += h
-			k1 = f.subs(t, t0)
-			solution = (1/11)*(18*y0 - 9*y1 + 2*y2 + 6*h*k1) - y
-			solution = sympy.solveset(solution, y)
-			y2 = y1
-			y1 = y0
-			y0 = solution.args[0]
-			lista_y.append(y0)
-			print(j, y0, file = saida)
+		if(implicito != '0'):
+			for j in range(3, n+1):
+				t0 += h
+				k1 = f.subs(t, t0)
+				solution = (1/11)*(18*y0 - 9*y1 + 2*y2 + 6*h*k1) - y
+				solution = sympy.solveset(solution, y)
+				y2 = y1
+				y1 = y0
+				y0 = solution.args[0]
+				lista_y.append(y0)
+				print(j, y0, file = saida)
+		else:
+			for j in range(3, n+1):
+				y_bashforth = adams_bashforth(y0, t0-(ordem - 1)*h, h, ordem, f_string, ordem, y_list, saida, 0)
+				t0 += h
+				fy = f.subs(t, t0)
+				k1 = fy.subs(y, y_bashforth[-1])				
+				y_final = (1/11)*(18*y0 - 9*y1 + 2*y2 + 6*h*k1)
+				lista_y.append(y_final)
+				y2 = y1
+				y1 = y0
+				y0 = y_final
+				y_list[0] = y2
+				y_list[1] = y1
+				y_list[2] = y0
+				print(j, y0, file = saida)
 	elif(ordem == 4):
 		y0 = y_list[3]
 		y1 = y_list[2]
 		y2 = y_list[1]
 		y3 = y_list[0]
-		for j in range(4, n+1):
-			t0 += h
-			k1 = f.subs(t, t0)
-			solution = (1/25)*(48*y0 - 36*y1 + 16*y2 - 3*y3 + 12*h*k1) - y
-			solution = sympy.solveset(solution, y)
-			y3 = y2
-			y2 = y1
-			y1 = y0
-			y0 = solution.args[0]
-			lista_y.append(y0)
-			print(j, y0, file = saida)
+		if(implicito != '0'):
+			for j in range(4, n+1):
+				t0 += h
+				k1 = f.subs(t, t0)
+				solution = (1/25)*(48*y0 - 36*y1 + 16*y2 - 3*y3 + 12*h*k1) - y
+				solution = sympy.solveset(solution, y)
+				y3 = y2
+				y2 = y1
+				y1 = y0
+				y0 = solution.args[0]
+				lista_y.append(y0)
+				print(j, y0, file = saida)
+		else:
+			for j in range(4, n+1):
+				y_bashforth = adams_bashforth(y0, t0-(ordem - 1)*h, h, ordem, f_string, ordem, y_list, saida, 0)
+				t0 += h
+				fy = f.subs(t, t0)
+				k1 = fy.subs(y, y_bashforth[-1])				
+				y_final = (1/25)*(48*y0 - 36*y1 + 16*y2 - 3*y3 + 12*h*k1)
+				lista_y.append(y_final)
+				y3 = y2
+				y2 = y1
+				y1 = y0
+				y0 = y_final
+				y_list[0] = y3
+				y_list[1] = y2
+				y_list[2] = y1
+				y_list[3] = y0
+				print(j, y0, file = saida)
 	elif(ordem == 5):
 		y0 = y_list[4]
 		y1 = y_list[3]
 		y2 = y_list[2]
 		y3 = y_list[1]
 		y4 = y_list[0]
-		for j in range(5, n+1):
-			t0 += h
-			k1 = f.subs(t, t0)
-			solution = (1/137)*(300*y0 - 300*y1 + 200*y2 - 75*y3 + 12*y4 + 60*h*k1) - y
-			solution = sympy.solveset(solution, y)
-			y4 = y3
-			y3 = y2
-			y2 = y1
-			y1 = y0
-			y0 = solution.args[0]
-			lista_y.append(y0)
-			print(j, y0, file = saida)
+		if(implicito != '0'):
+			for j in range(5, n+1):
+				t0 += h
+				k1 = f.subs(t, t0)
+				solution = (1/137)*(300*y0 - 300*y1 + 200*y2 - 75*y3 + 12*y4 + 60*h*k1) - y
+				solution = sympy.solveset(solution, y)
+				y4 = y3
+				y3 = y2
+				y2 = y1
+				y1 = y0
+				y0 = solution.args[0]
+				lista_y.append(y0)
+				print(j, y0, file = saida)
+		else:
+			for j in range(5, n+1):
+				y_bashforth = adams_bashforth(y0, t0-(ordem - 1)*h, h, ordem, f_string, ordem, y_list, saida, 0)
+				t0 += h
+				fy = f.subs(t, t0)				
+				k1 = fy.subs(y, y_bashforth[-1])
+				y_final = (1/137)*(300*y0 - 300*y1 + 200*y2 - 75*y3 + 12*y4 + 60*h*k1)
+				lista_y.append(y_final)
+				y4 = y3
+				y3 = y2
+				y2 = y1
+				y1 = y0
+				y0 = y_final
+				y_list[0] = y4
+				y_list[1] = y3
+				y_list[2] = y2
+				y_list[3] = y1
+				y_list[4] = y0
+				print(j, y0, file = saida)
 	elif(ordem == 6):
 		y0 = y_list[5]
 		y1 = y_list[4]
@@ -628,17 +690,42 @@ def funcao_inversa(y0, t0, h, n, f_string, ordem, y_list, saida, implicito):
 		y3 = y_list[2]
 		y4 = y_list[1]
 		y5 = y_list[0]
-		for j in range(6, n+1):
-			t0 += h
-			k1 = f.subs(t, t0)
-			solution = (1/147)*(360*y0 - 450*y1 + 400*y2 - 225*y3 + 72*y4 - 10*y5 + 60*h*k1) - y
-			solution = sympy.solveset(solution, y)
-			y5 = y4
-			y4 = y3
-			y3 = y2
-			y2 = y1
-			y1 = y0
-			y0 = solution.args[0]
-			lista_y.append(y0)
-			print(j, y0, file = saida)
+		#y_final = y0
+		if(implicito != '0'):
+			for j in range(6, n+1):
+				t0 += h
+				k1 = f.subs(t, t0)
+				solution = (1/147)*(360*y0 - 450*y1 + 400*y2 - 225*y3 + 72*y4 - 10*y5 + 60*h*k1) - y
+				solution = sympy.solveset(solution, y)
+				y5 = y4
+				y4 = y3
+				y3 = y2
+				y2 = y1
+				y1 = y0
+				y0 = solution.args[0]
+				lista_y.append(y0)
+				print(j, y0, file = saida)
+		else:
+			for j in range(6, n+1):
+				y_bashforth = adams_bashforth(y0, t0-(ordem-1)*h, h, ordem, f_string, ordem, y_list, saida, 0)
+				t0 += h
+				fy = f.subs(t, t0)			
+				k1 = fy.subs(y, y_bashforth[-1])
+				y_final = (1/147)*(360*y0 - 450*y1 + 400*y2 - 225*y3 + 72*y4 - 10*y5 + 60*h*k1)
+				lista_y.append(y_final)
+				y5 = y4
+				y4 = y3
+				y3 = y2
+				y2 = y1
+				y1 = y0
+				y0 = y_final
+				y_list[0] = y5
+				y_list[1] = y4
+				y_list[2] = y3
+				y_list[3] = y2
+				y_list[4] = y1
+				y_list[5] = y0
+				print(j, y0, file = saida)
+	else:
+		print("Ordem nao reconhecida", file = saida)
 	return lista_y

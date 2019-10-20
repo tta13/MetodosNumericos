@@ -40,7 +40,7 @@ def euler_inverso(y0, t0, h, n, f_string, saida, implicito):
 			t0 += h
 			fy = f.subs(t, t0)
 			yeuler = euler(y0, t0-h, h, 1, f_string, saida, 0)
-			k1 = fy.subs(y, yeuler[1])
+			k1 = fy.subs(y, yeuler[-1])
 			y0 += k1*h
 	return lista_y
 

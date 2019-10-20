@@ -3,9 +3,9 @@ import singlestep
 import multistep
 import graficos
 
-entrada = open("entrada.txt")
+entrada = open("entrada.txt", "r")
 saida = open("saida.txt", "w")
-implicito = int(input("Se voce deseja calcular os metodos a partir de previsao e correcao digite 0: "))
+implicito = input("Se voce deseja calcular os metodos a partir de previsao e correcao digite 0: ")
 lines = entrada.readlines()
 for i in lines:
 	string_parts = i.split()
@@ -180,7 +180,6 @@ for i in lines:
 		saida.write("\n")
 	else: 
 		saida.write("Metodo nao reconhecido\n\n")
-		
 print("Metodos Calculados no arquivo saida.txt")
 entrada.close()
 saida.close()
