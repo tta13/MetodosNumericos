@@ -13,4 +13,5 @@ def plotar(t0, h, n, y, titulo):
 	plt.xlabel('t') 
 	plt.ylabel('y') 
 	plt.title(titulo) 
-	plt.show() 
+	plt.savefig("Graficos\" + titulo) 
+	plt.close()
